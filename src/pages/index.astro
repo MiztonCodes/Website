@@ -1,49 +1,13 @@
 ---
 import '../styles/global.css';
+import { fetchBlogPosts } from '../services/devto';
+import BlogLayout from '../layouts/BlogLayout.astro';
 
 export const prerender = false;
 
-interface DevToArticle {
-  title: string;
-  url: string;
-  published_at: string;
-  public_reactions_count: number;
-  comments_count: number;
-}
-
-const DEV_TO_USERNAME = 'mizton';
-const API_URL = `https://dev.to/api/articles?username=${DEV_TO_USERNAME}`;
-
-let articles: DevToArticle[] = [];
-let fetchError = false;
-
-try {
-  const response = await fetch(API_URL);
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-  articles = await response.json();
-} catch (error) {
-  console.error("Failed to fetch articles:", error);
-  fetchError = true;
-}
+const {articles, fetchError} = await fetchBlogPosts()
 ---
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Software Engineering Foundations - Mizton">
-  <title>Mizton - Software Engineering</title>
-  <link rel="icon" href="/favicon.ico">
-
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-</head>
-
-<body class="bg-[#121212] text-[#e0e0e0] font-sans m-0 px-5 py-10 flex flex-col items-center min-h-screen">
-
+<BlogLayout>
   <div class="w-full max-w-200 flex flex-col gap-7.5">
     <div class="bg-[#1e1e1e] border border-[#333333] rounded-xl p-[25px_20px] min-[651px]:p-10 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
       <div class="flex flex-col min-[651px]:flex-row items-center gap-6.25 min-[651px]:gap-10 mb-7.5 text-center min-[651px]:text-left">
@@ -161,6 +125,4 @@ try {
       </div>
     </div>
   </div>
-
-</body>
-</html>
+</BlogLayout>
